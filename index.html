@@ -51,33 +51,40 @@
         .main-header h1 { font-size: 42px; font-weight: 800; margin: 0 0 15px 0; letter-spacing: -0.03em; }
         .main-header p { font-size: 17px; color: var(--text-secondary); font-weight: 400; max-width: 600px; word-break: keep-all; }
 
-        /* 카드를 정확히 4열(2줄)로 배치 */
         .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
         
+        /* 메인 카드 스타일 전면 수정 (테두리 제거, 강렬한 흰색 그림자 적용) */
         .main-card {
-            position: relative; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; cursor: pointer;
-            background-color: var(--bg-surface); background-size: cover; background-position: center;
-            border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden; cursor: pointer;
+            background-color: #111; background-size: cover; background-position: center; background-repeat: no-repeat;
+            border: none; /* 어색했던 테두리 완전 제거 */
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15); /* 기본 상태의 은은한 흰색 발광 */
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
         }
-        /* 은은한 검은색 그라데이션 오버레이 */
+        
         .main-card::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+            pointer-events: none;
         }
-        .main-card:hover { transform: translateY(-6px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.2); }
+        
+        .main-card:hover { 
+            transform: translateY(-8px); 
+            /* 마우스 오버 시 강렬하게 터지는 흰색 발광 그림자 */
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.3); 
+        }
+        
         .card-title {
             position: absolute; bottom: 24px; left: 24px; z-index: 2;
             font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3;
         }
 
-        /* 메인 화면 하단 푸터 */
         .main-footer {
             position: absolute; bottom: 40px; left: 5%; right: 5%;
             text-align: center; font-size: 14px; color: #5a5f6e; 
             border-top: 1px solid var(--border-color); padding-top: 20px;
         }
 
-        /* 반응형: 화면이 좁아질 경우 자동으로 열 개수 축소 */
         @media (max-width: 1024px) {
             .card-grid { grid-template-columns: repeat(2, 1fr); }
         }
@@ -102,12 +109,13 @@
             color: var(--text-primary); padding: 24px 20px; font-size: 22px; font-weight: 800;
             flex-direction: column; align-items: flex-start; gap: 16px;
         }
-        /* 활성화된 탭의 썸네일 영역 (이미지가 꽉 차게 들어감) */
+        
+        /* 활성화된 탭의 썸네일 영역 (테두리 제거) */
         .side-tab.active .tab-thumb {
-            width: 100%; height: 120px; border-radius: 8px; background-size: cover; background-position: center; background-color: #2a2d36;
+            width: 100%; height: 120px; border-radius: 10px; background-color: #111; border: none;
+            background-size: cover; background-position: center; background-repeat: no-repeat;
         }
 
-        /* 상세 화면 사이드바 하단 푸터 */
         .sidebar-footer {
             margin-top: auto; font-size: 12px; color: #5a5f6e; line-height: 1.5;
             padding-top: 20px; border-top: 1px solid var(--border-color);
@@ -118,7 +126,6 @@
         .content-subtitle { font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
         .content-title { font-size: 36px; font-weight: 800; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
         
-        /* 리스트 스타일 */
         .link-list { margin-bottom: 60px; }
         .link-row { 
             display: flex; justify-content: space-between; align-items: center; 
@@ -132,7 +139,6 @@
         }
         .link-btn:hover { color: var(--text-primary); }
 
-        /* 하단 데이터 요약 영역 */
         .data-section { background: var(--bg-surface); padding: 35px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .data-row:last-child { border-bottom: none; padding-bottom: 0; }
@@ -144,7 +150,6 @@
 </head>
 <body>
 
-    <!-- 1. 로그인 화면 -->
     <div id="login-screen">
         <div class="login-box">
             <h2>🔒 2026 LH SCP 관리자</h2>
@@ -154,7 +159,6 @@
         </div>
     </div>
 
-    <!-- 2. 메인 대시보드 화면 -->
     <div id="main-screen">
         <span class="top-sub-text">2026 LH SCP 과정 만족도 관리자 페이지</span>
         <div class="main-header">
@@ -171,10 +175,8 @@
         </div>
     </div>
 
-    <!-- 3. 상세(분할) 화면 -->
     <div id="detail-screen">
         <div class="split-layout">
-            <!-- 좌측 사이드바 탭 -->
             <aside class="sidebar">
                 <a class="back-link" onclick="goMain()">← 분야 선택 (메인으로)</a>
                 <div id="sidebar-tabs">
@@ -186,7 +188,6 @@
                 </div>
             </aside>
 
-            <!-- 우측 콘텐츠 -->
             <main class="content-area">
                 <div class="content-subtitle">LH SCP 만족도 자료실</div>
                 <h1 class="content-title" id="content-title">O차수 교육설문</h1>
@@ -226,7 +227,6 @@
         const ADMIN_PW = "6611"; 
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxcnkKyQ6xSp8g9OsotYCP6hKj-3AKgcvI_aUKVYGzt7LU8Kx36i6T3y02WMY8ZbzWs/exec"; 
         
-        // 차수별 시트 ID 및 배경 이미지 세팅
         const sessionData = {
             5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "hanwha.jpg" }, // 강릉 한화리조트
             6: { id: "", image: "shilla.jpg" }, // 강릉 신라 모노그램
@@ -251,7 +251,6 @@
             }
         }
 
-        // 메인 화면 정사각형 카드 4열 렌더링
         function renderMainCards() {
             const grid = document.getElementById('main-card-grid');
             grid.innerHTML = '';
@@ -272,7 +271,6 @@
             document.getElementById('main-screen').style.display = 'block';
         }
 
-        // 상세 화면 진입
         function openDetail(session) {
             currentSession = session;
             document.getElementById('main-screen').style.display = 'none';
@@ -282,7 +280,6 @@
             updateContent();
         }
 
-        // 사이드바 렌더링
         function renderSidebar() {
             const sidebar = document.getElementById('sidebar-tabs');
             sidebar.innerHTML = '';
@@ -303,7 +300,6 @@
             });
         }
 
-        // 우측 콘텐츠 실시간 연동
         async function updateContent() {
             const session = currentSession;
             document.getElementById('content-title').innerText = `${session}차수 교육설문`;
