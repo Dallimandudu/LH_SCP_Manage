@@ -3,137 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 LH SCP 만족도 관리자 시트</title>
+    <title>2026 LH SCP 과정 만족도 관리자</title>
     
+    <!-- Pretendard 폰트 로드 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable.css" />
 
     <style>
-        /* 전체 배경 순백색 적용 및 미니멀라이징 */
+        :root {
+            --bg-base: #0a0b0e;
+            --bg-surface: #14161a;
+            --text-primary: #ffffff;
+            --text-secondary: #8b92a5;
+            --accent: #e5e7eb;
+            --border-color: #2a2d36;
+        }
+
         body { 
             font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; 
-            background: #ffffff; /* 순백색 배경 */
-            margin: 0; padding: 0; color: #222; 
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            margin: 0; padding: 0; 
             letter-spacing: -0.02em;
-        }
-        
-        /* 패널: 그림자/테두리 최소화하여 플랫하고 깔끔하게 변경 */
-        .panel {
-            background: #ffffff; 
-            border-radius: 16px; 
-            margin: 40px auto; 
-            max-width: 900px; 
-            padding: 40px 20px;
+            line-height: 1.6;
         }
 
         /* 1. 로그인 화면 */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .login-box { width: 400px; text-align: center; }
-        .login-box h2 { font-size: 26px; margin-bottom: 12px; color: #111; font-weight: 800; }
-        .login-desc { font-size: 16px; color: #555; margin-bottom: 30px; font-weight: 500; line-height: 1.5; }
-        .login-hint { font-size: 14px; color: #0056b3; font-weight: 600; display: block; margin-top: 4px; }
-        
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .login-box { width: 400px; text-align: center; background: var(--bg-surface); padding: 50px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .login-box h2 { font-size: 24px; margin-bottom: 10px; font-weight: 700; }
+        .login-desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 30px; }
         .login-box input { 
-            padding: 16px; margin: 10px 0 20px 0; 
-            border: 1px solid #e9ecef; border-radius: 8px; width: 100%; 
-            font-size: 18px; text-align: center; outline: none; transition: 0.2s; 
-            background-color: #f8f9fa; box-sizing: border-box;
+            padding: 16px; margin-bottom: 20px; width: 100%; box-sizing: border-box;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); 
+            color: white; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.2s;
         }
-        .login-box input:focus { border-color: #001529; background-color: #ffffff; }
-        
+        .login-box input:focus { border-color: var(--text-secondary); background: rgba(255,255,255,0.1); }
         .login-box button { 
-            padding: 16px; width: 100%; 
-            background-color: #001529; color: white; 
-            border: none; border-radius: 8px; cursor: pointer; 
-            font-weight: 700; font-size: 18px; transition: 0.2s; 
+            padding: 16px; width: 100%; background: var(--text-primary); color: var(--bg-base); 
+            border: none; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s;
         }
-        .login-box button:hover { background-color: #003366; }
+        .login-box button:hover { background: #d1d5db; }
 
         /* 2. 메인 대시보드 */
-        #main-screen { display: none; }
-        .header-title { padding-bottom: 15px; margin-bottom: 40px; text-align: center; font-size: 28px; font-weight: 800; color: #111; }
-        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .session-btn {
-            background: #ffffff; border: 1px solid #e9ecef; border-radius: 12px;
-            padding: 30px 10px; font-size: 20px; font-weight: 700; color: #333;
-            cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .session-btn:hover { background: #f8f9fa; border-color: #0d47a1; color: #0d47a1; }
+        #main-screen { display: none; padding: 60px 5%; max-width: 1400px; margin: 0 auto; }
+        .top-sub-text { font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-bottom: 10px; display: block; }
+        .main-header { margin-bottom: 50px; }
+        .main-header h1 { font-size: 42px; font-weight: 800; margin: 0 0 15px 0; letter-spacing: -0.03em; }
+        .main-header p { font-size: 17px; color: var(--text-secondary); font-weight: 400; max-width: 600px; word-break: keep-all; }
 
-        /* 3. 상세 화면 */
-        #detail-screen { display: none; }
-        .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #111; padding-bottom: 15px; }
-        .detail-header h2 { font-size: 24px; font-weight: 800; color: #111; margin: 0; }
-        .back-btn { padding: 8px 16px; background: #e9ecef; color: #444; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
-        .back-btn:hover { background: #dee2e6; color: #111; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
         
-        /* 버튼 상단 고정 영역 */
-        .top-link-group { display: flex; gap: 12px; justify-content: center; margin-bottom: 40px; }
-        .action-btn { padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 700; transition: all 0.2s; }
-        .action-btn.survey { background: #001529; color: #ffffff; }
-        .action-btn.sheet { background: #ffffff; color: #001529; border: 1px solid #001529; }
-        .action-btn.survey:hover { background: #003366; }
-        .action-btn.sheet:hover { background: #f8f9fa; }
+        .main-card {
+            position: relative; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; cursor: pointer;
+            background-color: var(--bg-surface); background-size: cover; background-position: center;
+            border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .main-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+        }
+        .main-card:hover { transform: translateY(-6px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.2); }
+        .card-title {
+            position: absolute; bottom: 24px; left: 24px; z-index: 2;
+            font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3;
+        }
 
-        /* 데이터 영역 (투박함 제거, 플랫한 연회색 박스) */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .stat-card { background: #f8f9fa; padding: 30px 20px; border-radius: 12px; text-align: center; border: 1px solid #f1f3f5; }
-        .stat-card h4 { margin: 0 0 12px 0; color: #666; font-size: 16px; font-weight: 600; }
-        .stat-card .value { font-size: 34px; font-weight: 800; color: #111; }
-        .stat-card .value span { font-size: 34px; font-weight: 800; }
+        /* 3. 상세 화면 (Split View) */
+        #detail-screen { display: none; padding: 40px 5%; max-width: 1400px; margin: 0 auto; height: 100vh; box-sizing: border-box; }
+        .split-layout { display: flex; gap: 60px; height: 100%; align-items: flex-start; }
+        
+        /* 좌측 사이드바 */
+        .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+        .back-link { color: var(--text-secondary); text-decoration: none; font-size: 15px; font-weight: 600; margin-bottom: 20px; display: inline-block; cursor: pointer; transition: 0.2s; }
+        .back-link:hover { color: var(--text-primary); }
+        
+        .side-tab {
+            display: flex; align-items: center; padding: 12px 16px; border-radius: 12px; cursor: pointer;
+            background: var(--bg-surface); border: 1px solid transparent; transition: all 0.2s;
+            color: var(--text-secondary); font-weight: 600; font-size: 16px; gap: 12px;
+        }
+        .side-tab:hover { background: rgba(255,255,255,0.05); }
+        .side-tab.active {
+            background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);
+            color: var(--text-primary); padding: 24px 20px; font-size: 22px; font-weight: 800;
+            flex-direction: column; align-items: flex-start; gap: 16px;
+        }
+        /* 활성화된 탭의 썸네일 영역 */
+        .side-tab.active .tab-thumb {
+            width: 100%; height: 120px; border-radius: 8px; background-size: cover; background-position: center; background-color: #2a2d36;
+        }
 
-        #loading { text-align: center; font-size: 18px; color: #555; margin: 40px 0; font-weight: 600; }
+        /* 우측 콘텐츠 영역 */
+        .content-area { flex-grow: 1; padding-top: 30px; }
+        .content-subtitle { font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
+        .content-title { font-size: 36px; font-weight: 800; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        
+        /* 리스트 스타일 */
+        .link-list { margin-bottom: 60px; }
+        .link-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 24px 10px; border-bottom: 1px solid var(--border-color); transition: background 0.2s;
+        }
+        .link-row:hover { background: rgba(255,255,255,0.02); }
+        .link-label { font-size: 18px; font-weight: 600; color: var(--accent); }
+        .link-btn { 
+            color: var(--text-secondary); text-decoration: none; font-size: 15px; font-weight: 600; 
+            display: flex; align-items: center; gap: 5px; transition: color 0.2s;
+        }
+        .link-btn:hover { color: var(--text-primary); }
+
+        /* 하단 데이터 요약 영역 */
+        .data-section { background: var(--bg-surface); padding: 35px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .data-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .data-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .data-label { font-size: 17px; color: var(--text-secondary); font-weight: 500; }
+        .data-value { font-size: 22px; font-weight: 800; color: var(--text-primary); }
+
+        #loading { text-align: left; font-size: 16px; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; }
     </style>
 </head>
 <body>
 
+    <!-- 1. 로그인 화면 -->
     <div id="login-screen">
-        <div class="panel login-box">
-            <h2>🔒 2026 LH SCP 만족도 관리자</h2>
-            <div class="login-desc">
-                관리자 비밀번호를 입력해 주세요.<br>
-                <span class="login-hint">(힌트 : 김지후 대리)</span>
-            </div>
-            <input type="password" id="pw-input" placeholder="비밀번호 입력" onkeypress="if(event.keyCode==13) checkPassword()">
-            <br>
+        <div class="login-box">
+            <h2>🔒 2026 LH SCP 관리자</h2>
+            <div class="login-desc">비밀번호를 입력해 주세요.<br>(힌트 : 김지후 대리)</div>
+            <input type="password" id="pw-input" placeholder="비밀번호" onkeypress="if(event.keyCode==13) checkPassword()">
             <button onclick="checkPassword()">입장하기</button>
         </div>
     </div>
 
-    <div id="main-screen" class="panel">
-        <h2 class="header-title">교육 만족도 차수 선택</h2>
-        <div class="grid-container" id="button-grid">
-            <!-- 버튼 자동 생성 -->
+    <!-- 2. 메인 대시보드 화면 -->
+    <div id="main-screen">
+        <span class="top-sub-text">2026 LH SCP 과정 만족도 관리자 페이지</span>
+        <div class="main-header">
+            <h1>2026 LH SCP 과정 (Self Coaching Program)</h1>
+            <p>차수 탭을 선택하면 만족도 조사 문항(링크), 만족도 현황(일자 단위) 등 데이터를 한 자리에서 볼 수 있습니다.</p>
+        </div>
+        <div class="card-grid" id="main-card-grid">
+            <!-- 자바스크립트를 통해 카드가 렌더링 됩니다 -->
         </div>
     </div>
 
-    <div id="detail-screen" class="panel">
-        <div class="detail-header">
-            <h2 id="detail-title">O차수 교육 만족도 현황</h2>
-            <button class="back-btn" onclick="showMainScreen()">← 목록으로</button>
-        </div>
-        
-        <div class="top-link-group">
-            <a href="#" id="link-survey" target="_blank" class="action-btn survey">설문 링크 열기</a>
-            <a href="#" id="link-sheet" target="_blank" class="action-btn sheet">원본 데이터 열기</a>
-        </div>
+    <!-- 3. 상세(분할) 화면 -->
+    <div id="detail-screen">
+        <div class="split-layout">
+            <!-- 좌측 사이드바 탭 -->
+            <aside class="sidebar">
+                <a class="back-link" onclick="goMain()">← 분야 선택 (메인으로)</a>
+                <div id="sidebar-tabs">
+                    <!-- 자바스크립트를 통해 탭이 렌더링 됩니다 -->
+                </div>
+            </aside>
 
-        <div id="loading">데이터를 실시간으로 불러오는 중입니다... ⏳</div>
+            <!-- 우측 콘텐츠 -->
+            <main class="content-area">
+                <div class="content-subtitle">LH SCP 만족도 자료실</div>
+                <h1 class="content-title" id="content-title">O차수 교육설문</h1>
+                
+                <div class="link-list">
+                    <div class="link-row">
+                        <span class="link-label" id="label-survey">O차수 설문 문항</span>
+                        <a href="#" id="link-survey" target="_blank" class="link-btn">열기 →</a>
+                    </div>
+                    <div class="link-row">
+                        <span class="link-label">만족도 원본 데이터</span>
+                        <a href="#" id="link-sheet" target="_blank" class="link-btn">열기 →</a>
+                    </div>
+                </div>
 
-        <div id="detail-content" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h4>1일차 응답 수</h4>
-                    <div class="value"><span id="day1-count">-</span></div>
+                <div id="loading">실시간 데이터를 불러오는 중입니다...</div>
+                
+                <div class="data-section" id="data-section" style="display: none;">
+                    <div class="data-row">
+                        <span class="data-label">1일차 응답자 현황</span>
+                        <span class="data-value" id="day1-count">-명</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">2~3일차 응답자 현황</span>
+                        <span class="data-value" id="day2-count">-명</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">정량평가 만족도 평균</span>
+                        <span class="data-value" id="avg-score">-점</span>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h4>2~3일차 응답 수</h4>
-                    <div class="value"><span id="day2-count">-</span></div>
-                </div>
-                <div class="stat-card">
-                    <h4>정량평가 통합 평균</h4>
-                    <div class="value"><span id="avg-score">-</span>점</div>
-                </div>
-            </div>
+            </main>
         </div>
     </div>
 
@@ -141,65 +197,104 @@
         const ADMIN_PW = "6611"; 
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxcnkKyQ6xSp8g9OsotYCP6hKj-3AKgcvI_aUKVYGzt7LU8Kx36i6T3y02WMY8ZbzWs/exec"; 
         
-        const sheetData = {
-            5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio" },
-            6: { id: "" },
-            7: { id: "" },
-            8: { id: "" },
-            9: { id: "" },
-            10: { id: "" },
-            11: { id: "" },
-            12: { id: "" }
+        // ★ 차수별 세팅 (이미지 링크를 image URL 부분에 넣어주시면 배경으로 적용됩니다)
+        const sessionData = {
+            5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "" },
+            6: { id: "", image: "" },
+            7: { id: "", image: "" },
+            8: { id: "", image: "" },
+            9: { id: "", image: "" },
+            10: { id: "", image: "" },
+            11: { id: "", image: "" },
+            12: { id: "", image: "" }
         };
 
         const sessions = [5, 6, 7, 8, 9, 10, 11, 12];
+        let currentSession = null;
 
         function checkPassword() {
             if (document.getElementById('pw-input').value === ADMIN_PW) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-screen').style.display = 'block';
-                renderButtons();
+                renderMainCards();
             } else {
                 alert("비밀번호가 일치하지 않습니다.");
             }
         }
 
-        function renderButtons() {
-            const grid = document.getElementById('button-grid');
+        // 메인 화면 정사각형 카드 렌더링
+        function renderMainCards() {
+            const grid = document.getElementById('main-card-grid');
             grid.innerHTML = '';
             sessions.forEach(session => {
-                let btn = document.createElement('button');
-                btn.className = 'session-btn';
-                btn.innerText = session + "차수";
-                btn.onclick = () => showDetailScreen(session);
-                grid.appendChild(btn);
+                let bgStyle = sessionData[session].image ? `background-image: url('${sessionData[session].image}');` : `background: linear-gradient(135deg, #2a2d36, #14161a);`;
+                
+                let card = document.createElement('div');
+                card.className = 'main-card';
+                card.style = bgStyle;
+                card.onclick = () => openDetail(session);
+                card.innerHTML = `<div class="card-title">2026 LH SCP<br>${session}차수 교육 만족도</div>`;
+                grid.appendChild(card);
             });
         }
 
-        function showMainScreen() {
+        function goMain() {
             document.getElementById('detail-screen').style.display = 'none';
             document.getElementById('main-screen').style.display = 'block';
         }
 
-        async function showDetailScreen(session) {
+        // 상세 화면 진입 및 탭 전환
+        function openDetail(session) {
+            currentSession = session;
             document.getElementById('main-screen').style.display = 'none';
             document.getElementById('detail-screen').style.display = 'block';
             
-            document.getElementById('detail-title').innerText = `${session}차수 교육 만족도 현황`;
+            renderSidebar();
+            updateContent();
+        }
+
+        // 좌측 사이드바 렌더링
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar-tabs');
+            sidebar.innerHTML = '';
             
+            sessions.forEach(session => {
+                let tab = document.createElement('div');
+                let isActive = (session === currentSession);
+                tab.className = `side-tab ${isActive ? 'active' : ''}`;
+                tab.onclick = () => { if(!isActive) openDetail(session); };
+                
+                if(isActive) {
+                    let bgStyle = sessionData[session].image ? `background-image: url('${sessionData[session].image}');` : '';
+                    tab.innerHTML = `<div class="tab-thumb" style="${bgStyle}"></div>${session}차수 교육`;
+                } else {
+                    tab.innerHTML = `${session}차수`;
+                }
+                sidebar.appendChild(tab);
+            });
+        }
+
+        // 우측 콘텐츠 및 데이터 업데이트
+        async function updateContent() {
+            const session = currentSession;
+            document.getElementById('content-title').innerText = `${session}차수 교육설문`;
+            document.getElementById('label-survey').innerText = `${session}차수 설문 문항`;
+            
+            // 링크 세팅
             document.getElementById('link-survey').href = `https://dallimandudu.github.io/LH-SCP-Subey_${session}st/`;
-            const sheetId = sheetData[session].id;
+            const sheetId = sessionData[session].id;
             document.getElementById('link-sheet').href = sheetId ? `https://docs.google.com/spreadsheets/d/${sheetId}/edit` : "#";
 
-            document.getElementById('detail-content').style.display = 'none';
+            // 로딩 초기화
+            document.getElementById('data-section').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
 
             if (!sheetId) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('detail-content').style.display = 'block';
-                document.getElementById('day1-count').innerText = "시트없음";
-                document.getElementById('day2-count').innerText = "-";
-                document.getElementById('avg-score').innerText = "-";
+                document.getElementById('data-section').style.display = 'block';
+                document.getElementById('day1-count').innerText = "데이터 없음";
+                document.getElementById('day2-count').innerText = "데이터 없음";
+                document.getElementById('avg-score').innerText = "-점";
                 return;
             }
 
@@ -208,12 +303,12 @@
                 const data = await response.json();
 
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('detail-content').style.display = 'block';
+                document.getElementById('data-section').style.display = 'block';
 
                 if (data.status === "success") {
-                    document.getElementById('day1-count').innerText = data.day1Count + "명";
-                    document.getElementById('day2-count').innerText = data.day2_3Count + "명";
-                    document.getElementById('avg-score').innerText = data.avgScore;
+                    document.getElementById('day1-count').innerText = `${data.day1Count}명`;
+                    document.getElementById('day2-count').innerText = `${data.day2_3Count}명`;
+                    document.getElementById('avg-score').innerText = `${data.avgScore}점`;
                 } else {
                     alert("데이터를 불러오지 못했습니다: " + data.message);
                 }
