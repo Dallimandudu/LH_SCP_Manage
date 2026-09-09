@@ -84,7 +84,7 @@
             .card-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* 3. 상세 화면 */
+        /* 3. 상세 화면 (Split View) */
         #detail-screen { display: none; padding: 40px 5%; max-width: 1400px; margin: 0 auto; height: 100vh; box-sizing: border-box; }
         .split-layout { display: flex; gap: 60px; height: 100%; align-items: flex-start; }
         
@@ -124,33 +124,36 @@
         }
         .link-row:hover { background: rgba(255,255,255,0.02); }
         .link-label { font-size: 18px; font-weight: 600; color: var(--accent); }
+        
+        /* 🔥 열기 버튼: 노란색 적용 */
         .link-btn { 
-            color: var(--text-secondary); text-decoration: none; font-size: 15px; font-weight: 600; 
+            color: #ffd54f; /* 다크 모드에 어울리는 노란색 */
+            text-decoration: none; font-size: 15px; font-weight: 600; 
             display: flex; align-items: center; gap: 5px; transition: color 0.2s;
         }
-        .link-btn:hover { color: var(--text-primary); }
+        .link-btn:hover { color: #ffeb3b; }
 
         .data-section { background: var(--bg-surface); padding: 35px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .data-row:last-child { border-bottom: none; padding-bottom: 0; }
         .data-label { font-size: 17px; color: var(--text-secondary); font-weight: 500; }
         
-        /* 네온 녹색 텍스트 유지 */
+        /* 🔥 데이터 응답 결과: 은은한 하늘색 적용 */
         .data-value { 
             font-size: 22px; 
             font-weight: 800; 
-            color: #00ff00; 
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            color: #90caf9; /* 은은한 하늘색 */
+            text-shadow: 0 0 10px rgba(144, 202, 249, 0.3);
         }
 
         #loading { text-align: left; font-size: 16px; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; }
         
-        /* 🔥 데이터 갱신 일자 스타일 (은은한 베이지색) */
+        /* 데이터 갱신 일자 스타일 (은은한 베이지색 유지) */
         .last-updated {
             text-align: left;
             margin-top: 15px;
             font-size: 14px;
-            color: #d4b895; /* 베이지색 */
+            color: #d4b895;
             font-weight: 500;
             display: none;
         }
@@ -228,7 +231,7 @@
                     </div>
                 </div>
                 
-                <!-- 🔥 데이터 갱신 일자 표시 영역 -->
+                <!-- 데이터 갱신 일자 표시 영역 -->
                 <div id="last-updated-text" class="last-updated">마지막 갱신: -</div>
             </main>
         </div>
@@ -252,7 +255,7 @@
         const sessions = [5, 6, 7, 8, 9, 10, 11, 12];
         let currentSession = null;
 
-        // 브라우저 뒤로가기 버튼 감지 로직
+        // 브라우저 뒤로가기 버튼 감지 로직 유지
         window.addEventListener('popstate', function(event) {
             if (event.state && event.state.screen === 'detail') {
                 openDetail(event.state.session, false);
@@ -270,7 +273,6 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-screen').style.display = 'block';
                 
-                // 로그인 완료 시 메인 화면 상태 저장
                 history.pushState({ screen: 'main' }, '', window.location.pathname);
                 renderMainCards();
             } else {
@@ -293,7 +295,6 @@
             });
         }
 
-        // 메인으로 돌아가기 (pushHistory로 히스토리 스택 관리)
         function goMain(pushHistory = true) {
             document.getElementById('detail-screen').style.display = 'none';
             document.getElementById('main-screen').style.display = 'block';
@@ -303,7 +304,6 @@
             }
         }
 
-        // 상세 화면 열기
         function openDetail(session, pushHistory = true) {
             currentSession = session;
             document.getElementById('main-screen').style.display = 'none';
@@ -337,7 +337,6 @@
             });
         }
 
-        // 갱신 시간 포맷 생성 함수
         function getFormattedTime() {
             const now = new Date();
             return now.toLocaleString('ko-KR', {
@@ -380,7 +379,6 @@
                     document.getElementById('day2-count').innerText = `${data.day2_3Count}명`;
                     document.getElementById('avg-score').innerText = `${data.avgScore}점`;
                     
-                    // 데이터 갱신 성공 시 타임스탬프 업데이트 및 표시
                     const timeText = document.getElementById('last-updated-text');
                     timeText.innerText = `마지막 갱신: ${getFormattedTime()}`;
                     timeText.style.display = 'block';
