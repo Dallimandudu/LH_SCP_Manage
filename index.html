@@ -51,7 +51,7 @@
         .main-header h1 { font-size: 42px; font-weight: 800; margin: 0 0 15px 0; letter-spacing: -0.03em; }
         .main-header p { font-size: 17px; color: var(--text-secondary); font-weight: 400; max-width: 600px; word-break: keep-all; }
 
-        /* 카드를 정확히 4열(2줄)로 배치되도록 수정 */
+        /* 카드를 정확히 4열(2줄)로 배치 */
         .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
         
         .main-card {
@@ -59,6 +59,7 @@
             background-color: var(--bg-surface); background-size: cover; background-position: center;
             border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        /* 은은한 검은색 그라데이션 오버레이 */
         .main-card::after {
             content: ''; position: absolute; inset: 0;
             background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
@@ -101,6 +102,7 @@
             color: var(--text-primary); padding: 24px 20px; font-size: 22px; font-weight: 800;
             flex-direction: column; align-items: flex-start; gap: 16px;
         }
+        /* 활성화된 탭의 썸네일 영역 (이미지가 꽉 차게 들어감) */
         .side-tab.active .tab-thumb {
             width: 100%; height: 120px; border-radius: 8px; background-size: cover; background-position: center; background-color: #2a2d36;
         }
@@ -224,16 +226,16 @@
         const ADMIN_PW = "6611"; 
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxcnkKyQ6xSp8g9OsotYCP6hKj-3AKgcvI_aUKVYGzt7LU8Kx36i6T3y02WMY8ZbzWs/exec"; 
         
-        // 차수별 세팅 (이미지 링크를 image URL 부분에 넣어주시면 배경으로 적용됩니다)
+        // 차수별 시트 ID 및 배경 이미지 세팅
         const sessionData = {
-            5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "" },
-            6: { id: "", image: "" },
-            7: { id: "", image: "" },
-            8: { id: "", image: "" },
-            9: { id: "", image: "" },
-            10: { id: "", image: "" },
-            11: { id: "", image: "" },
-            12: { id: "", image: "" }
+            5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "hanwha.jpg" }, // 강릉 한화리조트
+            6: { id: "", image: "shilla.jpg" }, // 강릉 신라 모노그램
+            7: { id: "", image: "skybay.jpg" }, // 강릉 스카이베이
+            8: { id: "", image: "hanwha.jpg" }, // 경주 한화리조트
+            9: { id: "", image: "hanwha.jpg" }, // 경주 한화리조트
+            10: { id: "", image: "shilla.jpg" }, // 강릉 신라 모노그램
+            11: { id: "", image: "hanwha.jpg" }, // 경주 한화리조트
+            12: { id: "", image: "hanwha.jpg" }  // 경주 한화리조트
         };
 
         const sessions = [5, 6, 7, 8, 9, 10, 11, 12];
