@@ -51,7 +51,6 @@
         .main-header h1 { font-size: 42px; font-weight: 800; margin: 0 0 15px 0; letter-spacing: -0.03em; }
         .main-header p { font-size: 17px; color: var(--text-secondary); font-weight: 400; max-width: 600px; word-break: keep-all; }
 
-        /* 카드를 정확히 4열(2줄)로 배치 */
         .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
         
         .main-card {
@@ -85,7 +84,7 @@
             .card-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* 3. 상세 화면 (Split View) */
+        /* 3. 상세 화면 */
         #detail-screen { display: none; padding: 40px 5%; max-width: 1400px; margin: 0 auto; height: 100vh; box-sizing: border-box; }
         .split-layout { display: flex; gap: 60px; height: 100%; align-items: flex-start; }
         
@@ -125,32 +124,36 @@
         }
         .link-row:hover { background: rgba(255,255,255,0.02); }
         .link-label { font-size: 18px; font-weight: 600; color: var(--accent); }
-        
-        /* 🔥 변경 1: 열기 버튼을 노란색으로 변경 */
         .link-btn { 
-            color: #ffd700; /* 노랑색 */
-            text-decoration: none; font-size: 15px; font-weight: 600; 
-            display: flex; align-items: center; gap: 5px; transition: 0.2s;
+            color: var(--text-secondary); text-decoration: none; font-size: 15px; font-weight: 600; 
+            display: flex; align-items: center; gap: 5px; transition: color 0.2s;
         }
-        .link-btn:hover { 
-            color: #ffea00; 
-            text-shadow: 0 0 8px rgba(255, 234, 0, 0.4); /* 호버 시 살짝 빛나는 효과 */
-        }
+        .link-btn:hover { color: var(--text-primary); }
 
         .data-section { background: var(--bg-surface); padding: 35px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .data-row:last-child { border-bottom: none; padding-bottom: 0; }
         .data-label { font-size: 17px; color: var(--text-secondary); font-weight: 500; }
         
-        /* 🔥 변경 2: 데이터 값을 은은한 하늘색으로 변경 */
+        /* 네온 녹색 텍스트 유지 */
         .data-value { 
             font-size: 22px; 
             font-weight: 800; 
-            color: #8ab4f8; /* 은은하고 고급스러운 하늘색 */
-            text-shadow: 0 0 12px rgba(138, 180, 248, 0.3); /* 은은한 글로우 */
+            color: #00ff00; 
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
         }
 
         #loading { text-align: left; font-size: 16px; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; }
+        
+        /* 🔥 데이터 갱신 일자 스타일 (은은한 베이지색) */
+        .last-updated {
+            text-align: left;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #d4b895; /* 베이지색 */
+            font-weight: 500;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -172,7 +175,7 @@
         </div>
         
         <div class="card-grid" id="main-card-grid">
-            <!-- 자바스크립트를 통해 카드가 렌더링 됩니다 -->
+            <!-- 자바스크립트로 렌더링 -->
         </div>
 
         <div class="main-footer">
@@ -185,7 +188,7 @@
             <aside class="sidebar">
                 <a class="back-link" onclick="goMain()">← 분야 선택 (메인으로)</a>
                 <div id="sidebar-tabs">
-                    <!-- 자바스크립트를 통해 탭이 렌더링 됩니다 -->
+                    <!-- 자바스크립트로 렌더링 -->
                 </div>
                 
                 <div class="sidebar-footer">
@@ -224,6 +227,9 @@
                         <span class="data-value" id="avg-score">-점</span>
                     </div>
                 </div>
+                
+                <!-- 🔥 데이터 갱신 일자 표시 영역 -->
+                <div id="last-updated-text" class="last-updated">마지막 갱신: -</div>
             </main>
         </div>
     </div>
@@ -246,10 +252,26 @@
         const sessions = [5, 6, 7, 8, 9, 10, 11, 12];
         let currentSession = null;
 
+        // 브라우저 뒤로가기 버튼 감지 로직
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.screen === 'detail') {
+                openDetail(event.state.session, false);
+            } else if (event.state && event.state.screen === 'main') {
+                goMain(false);
+            } else {
+                if (document.getElementById('detail-screen').style.display === 'block') {
+                    goMain(false);
+                }
+            }
+        });
+
         function checkPassword() {
             if (document.getElementById('pw-input').value === ADMIN_PW) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-screen').style.display = 'block';
+                
+                // 로그인 완료 시 메인 화면 상태 저장
+                history.pushState({ screen: 'main' }, '', window.location.pathname);
                 renderMainCards();
             } else {
                 alert("비밀번호가 일치하지 않습니다.");
@@ -265,21 +287,31 @@
                 let card = document.createElement('div');
                 card.className = 'main-card';
                 card.style = bgStyle;
-                card.onclick = () => openDetail(session);
+                card.onclick = () => openDetail(session, true);
                 card.innerHTML = `<div class="card-title">2026 LH SCP<br>${session}차수 교육 만족도</div>`;
                 grid.appendChild(card);
             });
         }
 
-        function goMain() {
+        // 메인으로 돌아가기 (pushHistory로 히스토리 스택 관리)
+        function goMain(pushHistory = true) {
             document.getElementById('detail-screen').style.display = 'none';
             document.getElementById('main-screen').style.display = 'block';
+            
+            if (pushHistory) {
+                history.pushState({ screen: 'main' }, '', window.location.pathname);
+            }
         }
 
-        function openDetail(session) {
+        // 상세 화면 열기
+        function openDetail(session, pushHistory = true) {
             currentSession = session;
             document.getElementById('main-screen').style.display = 'none';
             document.getElementById('detail-screen').style.display = 'block';
+            
+            if (pushHistory) {
+                history.pushState({ screen: 'detail', session: session }, '', '?session=' + session);
+            }
             
             renderSidebar();
             updateContent();
@@ -293,7 +325,7 @@
                 let tab = document.createElement('div');
                 let isActive = (session === currentSession);
                 tab.className = `side-tab ${isActive ? 'active' : ''}`;
-                tab.onclick = () => { if(!isActive) openDetail(session); };
+                tab.onclick = () => { if(!isActive) openDetail(session, true); };
                 
                 if(isActive) {
                     let bgStyle = sessionData[session].image ? `background-image: url('${sessionData[session].image}');` : '';
@@ -302,6 +334,15 @@
                     tab.innerHTML = `${session}차수`;
                 }
                 sidebar.appendChild(tab);
+            });
+        }
+
+        // 갱신 시간 포맷 생성 함수
+        function getFormattedTime() {
+            const now = new Date();
+            return now.toLocaleString('ko-KR', {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
             });
         }
 
@@ -315,6 +356,7 @@
             document.getElementById('link-sheet').href = sheetId ? `https://docs.google.com/spreadsheets/d/${sheetId}/edit` : "#";
 
             document.getElementById('data-section').style.display = 'none';
+            document.getElementById('last-updated-text').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
 
             if (!sheetId) {
@@ -337,6 +379,11 @@
                     document.getElementById('day1-count').innerText = `${data.day1Count}명`;
                     document.getElementById('day2-count').innerText = `${data.day2_3Count}명`;
                     document.getElementById('avg-score').innerText = `${data.avgScore}점`;
+                    
+                    // 데이터 갱신 성공 시 타임스탬프 업데이트 및 표시
+                    const timeText = document.getElementById('last-updated-text');
+                    timeText.innerText = `마지막 갱신: ${getFormattedTime()}`;
+                    timeText.style.display = 'block';
                 } else {
                     alert("데이터를 불러오지 못했습니다: " + data.message);
                 }
