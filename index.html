@@ -311,6 +311,11 @@
                         <span class="data-label">2~3일차 응답자 현황</span>
                         <span class="data-value" id="day2-count">-명</span>
                     </div>
+                    <!-- 사후진단 응답현황 추가 -->
+                    <div class="data-row">
+                        <span class="data-label">사후진단 응답현황</span>
+                        <span class="data-value" id="post-count">-명</span>
+                    </div>
                     <div class="data-row">
                         <span class="data-label">정량평가 만족도 평균</span>
                         <span class="data-value" id="avg-score">-점</span>
@@ -346,7 +351,7 @@
         // - postUrl: 사후 진단 데이터 링크 (전체 URL을 그대로 넣어주세요)
         const sessionData = {
             5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "hanwha.jpg", preUrl: "", postUrl: "" },
-            6: { id: "", image: "shilla.jpg", preUrl: "", postUrl: "" },
+            6: { id: "", image: "shilla.jpg", preUrl: "", postUrl: "https://docs.google.com/spreadsheets/d/1HLi6LRUTB1zg8JqaZJpAriLMrEPOuGrD1z472RHctOw/edit?usp=sharing" },
             7: { id: "", image: "skybay.jpg", preUrl: "", postUrl: "" },
             8: { id: "", image: "hanwha.jpg", preUrl: "", postUrl: "" },
             9: { id: "", image: "hanwha.jpg", preUrl: "", postUrl: "" },
@@ -506,6 +511,7 @@
                 document.getElementById('data-section').style.display = 'block';
                 document.getElementById('day1-count').innerText = "데이터 없음";
                 document.getElementById('day2-count').innerText = "데이터 없음";
+                document.getElementById('post-count').innerText = "데이터 없음"; // 사후진단 현황 추가
                 document.getElementById('avg-score').innerText = "-점";
                 return;
             }
@@ -524,6 +530,8 @@
                 if (data.status === "success") {
                     document.getElementById('day1-count').innerText = `${data.day1Count}명`;
                     document.getElementById('day2-count').innerText = `${data.day2_3Count}명`;
+                    // GAS 서버에서 postCount 값을 넘겨준다고 가정 (값이 없을 경우 '-' 처리)
+                    document.getElementById('post-count').innerText = `${data.postCount !== undefined ? data.postCount : '-'}명`;
                     document.getElementById('avg-score').innerText = `${data.avgScore}점`;
                     
                     const timeText = document.getElementById('last-updated-text');
