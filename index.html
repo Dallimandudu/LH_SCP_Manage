@@ -126,6 +126,13 @@
         }
         .link-btn:hover { color: #ffeb3b; }
         .link-btn.disabled { color: #5a5f6e; cursor: default; pointer-events: none; }
+
+        /* 링크 대신 안내 문구만 보여줄 때 사용 (예: 구글폼으로 설문대체) */
+        .link-note {
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 600;
+        }
  
         .data-section { background: var(--bg-surface); padding: 35px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -222,6 +229,7 @@
             .link-row { padding: 16px 5px; }
             .link-label { font-size: 15px; }
             .link-btn { font-size: 14px; }
+            .link-note { font-size: 14px; }
             
             .data-section { padding: 20px; }
             .data-label { font-size: 14px; }
@@ -285,6 +293,7 @@
                     <div class="link-row">
                         <span class="link-label" id="label-survey">O차수 설문 문항</span>
                         <a href="#" id="link-survey" target="_blank" class="link-btn">열기 →</a>
+                        <span id="link-survey-note" class="link-note" style="display:none;"></span>
                     </div>
                     <div class="link-row">
                         <span class="link-label">만족도 원본 데이터</span>
@@ -349,9 +358,11 @@
         // - id: 만족도 원본 데이터의 구글 시트 ID
         // - preUrl: 사전 진단 데이터 링크 (전체 URL을 그대로 넣어주세요. 구글 시트/폼 상관없이 링크만 넣으면 됩니다)
         // - postUrl: 사후 진단 데이터 링크 (전체 URL을 그대로 넣어주세요)
+        // - surveyUrl: (선택) 설문 문항 링크를 기본 규칙(LH-SCP-Subey_N st)과 다른 주소로 지정할 때 사용
+        // - surveyNote: (선택) 값이 있으면 설문 문항 링크 대신 이 텍스트만 표시 (예: "구글폼으로 설문대체")
         const sessionData = {
-            5: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "hanwha.jpg", preUrl: "", postUrl: "" },
-            6: { id: "", image: "shilla.jpg", preUrl: "", postUrl: "https://docs.google.com/spreadsheets/d/1HLi6LRUTB1zg8JqaZJpAriLMrEPOuGrD1z472RHctOw/edit?usp=sharing" },
+            5: { id: "", image: "hanwha.jpg", preUrl: "", postUrl: "", surveyNote: "구글폼으로 설문대체" },
+            6: { id: "1OdQrGuEouQDczRtmetVOstX9HKNQUTXigwyL-kchFio", image: "shilla.jpg", preUrl: "", postUrl: "https://docs.google.com/spreadsheets/d/1HLi6LRUTB1zg8JqaZJpAriLMrEPOuGrD1z472RHctOw/edit?usp=sharing", surveyUrl: "https://dallimandudu.github.io/LH-SCP-Surbey_6st/" },
             7: { id: "", image: "skybay.jpg", preUrl: "", postUrl: "" },
             8: { id: "", image: "hanwha.jpg", preUrl: "", postUrl: "" },
             9: { id: "", image: "hanwha.jpg", preUrl: "", postUrl: "" },
@@ -493,10 +504,24 @@
  
             document.getElementById('content-title').innerText = `${session}차수 교육설문`;
             document.getElementById('label-survey').innerText = `${session}차수 설문 문항`;
-            
-            document.getElementById('link-survey').href = `https://dallimandudu.github.io/LH-SCP-Subey_${session}st/`;
+
+            // 설문 문항 링크: surveyNote가 지정된 차수는 링크 대신 안내 텍스트만 표시하고,
+            // surveyUrl이 지정된 차수는 그 주소를, 그 외에는 기본 규칙 주소를 사용합니다.
+            const surveyLinkEl = document.getElementById('link-survey');
+            const surveyNoteEl = document.getElementById('link-survey-note');
+            const surveyNote = sessionData[session].surveyNote;
+            if (surveyNote) {
+                surveyLinkEl.style.display = 'none';
+                surveyNoteEl.style.display = 'inline-block';
+                surveyNoteEl.innerText = surveyNote;
+            } else {
+                surveyLinkEl.style.display = 'flex';
+                surveyNoteEl.style.display = 'none';
+                surveyLinkEl.href = sessionData[session].surveyUrl || `https://dallimandudu.github.io/LH-SCP-Subey_${session}st/`;
+            }
+
             const sheetId = sessionData[session].id;
-            document.getElementById('link-sheet').href = sheetId ? `https://docs.google.com/spreadsheets/d/${sheetId}/edit` : "#";
+            setLinkButton('link-sheet', sheetId ? `https://docs.google.com/spreadsheets/d/${sheetId}/edit` : "");
  
             // 사전/사후 진단 데이터 링크 (아직 비어있으면 비활성화 상태로 표시)
             setLinkButton('link-pre', sessionData[session].preUrl);
