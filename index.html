@@ -1,3 +1,6 @@
+
+
+Admin · HTML
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,7 +9,7 @@
     <title>2026 LH SCP 과정 만족도 관리자</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable.css" />
-
+ 
     <style>
         :root {
             --bg-base: #0a0b0e;
@@ -16,7 +19,7 @@
             --accent: #e5e7eb;
             --border-color: #2a2d36;
         }
-
+ 
         body { 
             font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; 
             background-color: var(--bg-base);
@@ -28,7 +31,7 @@
         }
         
         * { box-sizing: border-box; }
-
+ 
         /* 1. 로그인 화면 */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
         .login-box { width: 100%; max-width: 400px; text-align: center; background: var(--bg-surface); padding: 50px 30px; border-radius: 16px; border: 1px solid var(--border-color); }
@@ -45,14 +48,14 @@
             border: none; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s;
         }
         .login-box button:hover { background: #d1d5db; }
-
+ 
         /* 2. 메인 대시보드 */
         #main-screen { display: none; padding: 60px 5%; max-width: 1400px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 120px; }
         .top-sub-text { font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-bottom: 10px; display: block; }
         .main-header { margin-bottom: 50px; }
         .main-header h1 { font-size: 42px; font-weight: 800; margin: 0 0 15px 0; letter-spacing: -0.03em; word-break: keep-all; }
         .main-header p { font-size: 17px; color: var(--text-secondary); font-weight: 400; max-width: 600px; word-break: keep-all; }
-
+ 
         .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
         
         .main-card {
@@ -75,13 +78,13 @@
             position: absolute; bottom: 24px; left: 24px; z-index: 2;
             font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3;
         }
-
+ 
         .main-footer {
             position: absolute; bottom: 40px; left: 5%; right: 5%;
             text-align: center; font-size: 14px; color: #5a5f6e; 
             border-top: 1px solid var(--border-color); padding-top: 20px; word-break: keep-all;
         }
-
+ 
         /* 3. 상세 화면 (Split View) */
         #detail-screen { display: none; padding: 40px 5%; max-width: 1400px; margin: 0 auto; min-height: 100vh; }
         .split-layout { display: flex; gap: 60px; align-items: flex-start; }
@@ -106,9 +109,9 @@
             width: 100%; height: 120px; border-radius: 10px; background-color: #111; border: none;
             background-size: cover; background-position: center; background-repeat: no-repeat;
         }
-
+ 
         .sidebar-footer { margin-top: 20px; font-size: 12px; color: #5a5f6e; line-height: 1.5; padding-top: 20px; border-top: 1px solid var(--border-color); }
-
+ 
         .content-area { flex-grow: 1; padding-top: 30px; width: 100%; }
         .content-subtitle { font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; }
         .content-title { font-size: 36px; font-weight: 800; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); word-break: keep-all; }
@@ -125,7 +128,7 @@
             display: flex; align-items: center; gap: 5px; transition: color 0.2s;
         }
         .link-btn:hover { color: #ffeb3b; }
-
+ 
         .data-section { background: var(--bg-surface); padding: 35px 40px; border-radius: 16px; border: 1px solid var(--border-color); }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .data-row:last-child { border-bottom: none; padding-bottom: 0; }
@@ -136,12 +139,53 @@
             font-size: 22px; font-weight: 800; color: #90caf9; 
             text-shadow: 0 0 10px rgba(144, 202, 249, 0.3);
         }
-
-        #loading { text-align: left; font-size: 16px; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; }
+ 
+        /* 로딩 표시: 스피너 + 텍스트 */
+        #loading { 
+            display: flex; align-items: center; gap: 10px;
+            text-align: left; font-size: 16px; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; 
+        }
+        .loading-spinner-dark {
+            width: 16px; height: 16px; border-radius: 50%; flex: none;
+            border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--text-secondary);
+            animation: spin-dark 0.8s linear infinite;
+        }
+        @keyframes spin-dark { to { transform: rotate(360deg); } }
         
         /* 데이터 갱신 일자 스타일 (은은한 베이지색 유지) */
         .last-updated { text-align: left; margin-top: 15px; font-size: 14px; color: #d4b895; font-weight: 500; display: none; }
-
+ 
+        /* 커스텀 알림 모달 (다크 테마, alert() 대체) */
+        #adminAlertOverlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+        }
+        #adminAlertOverlay.active { opacity: 1; pointer-events: auto; }
+        .admin-alert-box {
+            background: var(--bg-surface); border: 1px solid var(--border-color);
+            padding: 32px 26px 26px; border-radius: 16px; width: 85%; max-width: 320px; text-align: center;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+            transform: translateY(16px); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #adminAlertOverlay.active .admin-alert-box { transform: translateY(0); }
+        .admin-alert-icon {
+            margin: 0 auto 16px; width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255, 213, 79, 0.12);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .admin-alert-icon svg { width: 26px; height: 26px; }
+        .admin-alert-msg {
+            font-size: 15px; color: var(--text-primary); line-height: 1.6; font-weight: 600;
+            margin: 0 0 22px; word-break: keep-all;
+        }
+        .admin-alert-btn {
+            width: 100%; padding: 13px; border-radius: 10px; background: var(--text-primary); color: var(--bg-base);
+            font-weight: 800; font-size: 15px; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .admin-alert-btn:hover { background: #d1d5db; }
+ 
         /* =========================================
            반응형 모바일 UI (768px 이하 기기 적용)
            ========================================= */
@@ -186,7 +230,7 @@
             .data-value { font-size: 18px; }
             .last-updated { font-size: 12px; }
         }
-
+ 
         /* 480px 이하 초소형 기기 (예: 구형 아이폰) */
         @media (max-width: 480px) {
             .card-grid { grid-template-columns: repeat(1, 1fr); }
@@ -196,16 +240,16 @@
     </style>
 </head>
 <body>
-
+ 
     <div id="login-screen">
         <div class="login-box">
             <h2>🔒 2026 LH SCP 관리자</h2>
             <div class="login-desc">비밀번호를 입력해 주세요.<br>(힌트 : 김지후 대리)</div>
-            <input type="password" id="pw-input" placeholder="비밀번호" onkeypress="if(event.keyCode==13) checkPassword()">
+            <input type="password" id="pw-input" placeholder="비밀번호">
             <button onclick="checkPassword()">입장하기</button>
         </div>
     </div>
-
+ 
     <div id="main-screen">
         <span class="top-sub-text">2026 LH SCP 과정 만족도 관리자 페이지</span>
         <div class="main-header">
@@ -216,12 +260,12 @@
         <div class="card-grid" id="main-card-grid">
             <!-- 자바스크립트로 렌더링 -->
         </div>
-
+ 
         <div class="main-footer">
             본 프로젝트는 LH한국토지주택공사 인재개발원 교육사업으로 K-BRAIN이 전담 수행을 맡고 있습니다.
         </div>
     </div>
-
+ 
     <div id="detail-screen">
         <div class="split-layout">
             <aside class="sidebar">
@@ -234,7 +278,7 @@
                     본 프로젝트는 LH한국토지주택공사 인재개발원 교육사업으로 K-BRAIN이 전담 수행을 맡고 있습니다.
                 </div>
             </aside>
-
+ 
             <main class="content-area">
                 <div class="content-subtitle">LH SCP 만족도 자료실</div>
                 <h1 class="content-title" id="content-title">O차수 교육설문</h1>
@@ -249,8 +293,8 @@
                         <a href="#" id="link-sheet" target="_blank" class="link-btn">열기 →</a>
                     </div>
                 </div>
-
-                <div id="loading">실시간 데이터를 불러오는 중입니다...</div>
+ 
+                <div id="loading"><span class="loading-spinner-dark"></span><span>실시간 데이터를 불러오는 중입니다...</span></div>
                 
                 <div class="data-section" id="data-section" style="display: none;">
                     <div class="data-row">
@@ -272,7 +316,20 @@
             </main>
         </div>
     </div>
-
+ 
+    <!-- 커스텀 알림 모달 (alert() 대체) -->
+    <div id="adminAlertOverlay">
+        <div class="admin-alert-box">
+            <div class="admin-alert-icon">
+                <svg fill="none" stroke="#ffd54f" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <p class="admin-alert-msg" id="adminAlertMsg">알림 메시지</p>
+            <button type="button" class="admin-alert-btn" onclick="closeAdminAlert()">확인</button>
+        </div>
+    </div>
+ 
     <script>
         const ADMIN_PW = "6611"; 
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxcnkKyQ6xSp8g9OsotYCP6hKj-3AKgcvI_aUKVYGzt7LU8Kx36i6T3y02WMY8ZbzWs/exec"; 
@@ -287,10 +344,21 @@
             11: { id: "", image: "hanwha.jpg" },
             12: { id: "", image: "hanwha.jpg" }
         };
-
+ 
         const sessions = [5, 6, 7, 8, 9, 10, 11, 12];
         let currentSession = null;
-
+ 
+        // 커스텀 알림 모달 헬퍼 (alert() 대체)
+        const adminAlertOverlay = document.getElementById('adminAlertOverlay');
+        const adminAlertMsg = document.getElementById('adminAlertMsg');
+        function showAdminAlert(message) {
+            adminAlertMsg.innerHTML = message;
+            adminAlertOverlay.classList.add('active');
+        }
+        function closeAdminAlert() {
+            adminAlertOverlay.classList.remove('active');
+        }
+ 
         // 브라우저 뒤로가기 버튼 감지 로직 유지
         window.addEventListener('popstate', function(event) {
             if (event.state && event.state.screen === 'detail') {
@@ -303,7 +371,7 @@
                 }
             }
         });
-
+ 
         function checkPassword() {
             if (document.getElementById('pw-input').value === ADMIN_PW) {
                 document.getElementById('login-screen').style.display = 'none';
@@ -312,10 +380,17 @@
                 history.pushState({ screen: 'main' }, '', window.location.pathname);
                 renderMainCards();
             } else {
-                alert("비밀번호가 일치하지 않습니다.");
+                showAdminAlert("비밀번호가 일치하지 않습니다.");
             }
         }
-
+ 
+        // Enter 키 입력 처리 (구형 keyCode 방식 대신 표준 key 이벤트 사용)
+        document.getElementById('pw-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+ 
         function renderMainCards() {
             const grid = document.getElementById('main-card-grid');
             grid.innerHTML = '';
@@ -330,7 +405,7 @@
                 grid.appendChild(card);
             });
         }
-
+ 
         function goMain(pushHistory = true) {
             document.getElementById('detail-screen').style.display = 'none';
             document.getElementById('main-screen').style.display = 'block';
@@ -339,7 +414,7 @@
                 history.pushState({ screen: 'main' }, '', window.location.pathname);
             }
         }
-
+ 
         function openDetail(session, pushHistory = true) {
             currentSession = session;
             document.getElementById('main-screen').style.display = 'none';
@@ -352,7 +427,7 @@
             renderSidebar();
             updateContent();
         }
-
+ 
         function renderSidebar() {
             const sidebar = document.getElementById('sidebar-tabs');
             sidebar.innerHTML = '';
@@ -372,7 +447,7 @@
                 sidebar.appendChild(tab);
             });
         }
-
+ 
         function getFormattedTime() {
             const now = new Date();
             return now.toLocaleString('ko-KR', {
@@ -380,20 +455,26 @@
                 hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
             });
         }
-
+ 
+        // 탭을 빠르게 여러 번 클릭했을 때, 늦게 도착한 이전 요청의 응답이
+        // 최신 탭 데이터를 덮어쓰지 않도록 요청 토큰으로 최신 요청만 반영합니다.
+        let latestRequestToken = 0;
+ 
         async function updateContent() {
             const session = currentSession;
+            const requestToken = ++latestRequestToken;
+ 
             document.getElementById('content-title').innerText = `${session}차수 교육설문`;
             document.getElementById('label-survey').innerText = `${session}차수 설문 문항`;
             
             document.getElementById('link-survey').href = `https://dallimandudu.github.io/LH-SCP-Subey_${session}st/`;
             const sheetId = sessionData[session].id;
             document.getElementById('link-sheet').href = sheetId ? `https://docs.google.com/spreadsheets/d/${sheetId}/edit` : "#";
-
+ 
             document.getElementById('data-section').style.display = 'none';
             document.getElementById('last-updated-text').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
-
+            document.getElementById('loading').style.display = 'flex';
+ 
             if (!sheetId) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('data-section').style.display = 'block';
@@ -402,14 +483,18 @@
                 document.getElementById('avg-score').innerText = "-점";
                 return;
             }
-
+ 
             try {
                 const response = await fetch(`${GAS_URL}?sheetId=${sheetId}`);
                 const data = await response.json();
-
+ 
+                // 이 fetch가 진행되는 동안 다른 탭이 클릭되어 더 최신 요청이 발생했다면,
+                // 이 응답은 화면에 반영하지 않고 무시합니다.
+                if (requestToken !== latestRequestToken) return;
+ 
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('data-section').style.display = 'block';
-
+ 
                 if (data.status === "success") {
                     document.getElementById('day1-count').innerText = `${data.day1Count}명`;
                     document.getElementById('day2-count').innerText = `${data.day2_3Count}명`;
@@ -419,13 +504,15 @@
                     timeText.innerText = `마지막 갱신: ${getFormattedTime()}`;
                     timeText.style.display = 'block';
                 } else {
-                    alert("데이터를 불러오지 못했습니다: " + data.message);
+                    showAdminAlert("데이터를 불러오지 못했습니다: " + data.message);
                 }
             } catch (error) {
-                alert("통신 오류가 발생했습니다.");
+                if (requestToken !== latestRequestToken) return;
+                showAdminAlert("통신 오류가 발생했습니다.");
                 document.getElementById('loading').style.display = 'none';
             }
         }
     </script>
 </body>
 </html>
+ 
